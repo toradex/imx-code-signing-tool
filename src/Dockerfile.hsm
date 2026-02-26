@@ -1,0 +1,91 @@
+# Docker image to provide sample HSM to test CST pkcs11/HSM backend
+#
+# Copyright 2022-2024 NXP
+
+FROM ubuntu:22.04
+
+# Set noninteractive installation
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Setup a work environment
+ENV WORK_DIR /opt/cst
+
+# Allow using a http proxy. It should be passed to docker build command using, eg:
+# --build-arg http_proxy=$bamboo_capability_agent_http_proxy
+ARG http_proxy
+ENV http_proxy=$http_proxy
+
+# Configure host user in docker container (use your host user uid/gid to keep permissions in sync)
+ARG hostUID=$hostUID
+ARG hostGID=$hostGID
+ARG hostUserName=$hostUserName
+
+RUN dpkg --add-architecture i386
+
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    locales
+
+# Perform some locale bookkeeping
+RUN locale-gen en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV TZ=Universal
+
+# Use bash
+RUN rm /bin/sh && ln -s bash /bin/sh
+
+# Set the token directory
+ARG TOKEN_DIR="$WORK_DIR/softhsm2/tokens/"
+
+RUN groupadd -f -g $hostGID $hostUserName
+RUN useradd -g $hostGID -m -s /bin/bash -u $hostUID $hostUserName
+
+# Make docker prompt obvious
+RUN echo 'export PS1="[\@] \[\e[01;33m\]\u@docker:\[\e[01;31m\]\W\[\e[00m\]\$ "' >> /home/$hostUserName/.bashrc && \
+    date > /opt/image-creation-date.txt
+
+# Install CST requisites
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    openssl                  \
+    libengine-pkcs11-openssl \
+    softhsm2                 \
+    libsofthsm2-dev          \
+    opensc                   \
+    p11-kit
+
+# Change the priority of PKCS#11 to be set to SoftHSM
+RUN echo "priority: 10" >> /usr/share/p11-kit/modules/softhsm2.module
+
+# Set the p11-kit proxy as PKCS11 library.
+ENV PKCS11_MODULE_PATH /usr/lib/x86_64-linux-gnu/p11-kit-proxy.so
+
+# Define Token login parameters
+ENV SO_PIN 654321
+ENV USR_PIN 123456
+
+# Add dockeruser in softhsm group
+RUN usermod -aG softhsm $hostUserName
+
+# Create SoftHSM configuration folder
+RUN mkdir -p /home/$hostUserName/.config/softhsm2
+
+# Create softhsm user configuration
+RUN mkdir -p $TOKEN_DIR
+# Configure the token directory.
+RUN echo "directories.tokendir = $TOKEN_DIR" >> /home/$hostUserName/.config/softhsm2/softhsm2.conf
+# Configure a file-based backend.
+RUN echo "objectstore.backend = file" >> /home/$hostUserName/.config/softhsm2/softhsm2.conf
+RUN chown -R $hostUserName:$hostUserName /home/$hostUserName/.config
+
+# For custom OpenSSL configuration
+ENV OPENSSL_DIR /opt/cst
+RUN mkdir -p $OPENSSL_DIR
+RUN chown -R $hostUserName:$hostUserName $OPENSSL_DIR
+
+# Switch to user profile
+RUN chown -R $hostUserName:$hostUserName $WORK_DIR
+USER $hostUserName
+
+# Done
+WORKDIR /home/$hostUserName/cst/

@@ -1,0 +1,48 @@
+1 - AHAB signature block parser:
+
+This tool is developed to assist users to parse the AHAB signature block
+from a signed container image. The tool also generates the certificates,
+signatures, SRK table and SRK Hash.
+
+2 - Requirements:
+
+	python3 ($ apt-get install python3)
+	python-cryptography ($ pip3 install cryptography)
+
+3 - Usage:
+
+	$ python3 parse_sig_blk.py <filepath> <offset>
+		filepath: Path for image container binary to be analyzed.
+		offset:   Container header offset in binary
+
+	Note: Only one container header can be parsed at once.
+
+	The tool creates a output directory with the following contents:
+	IMG_sign.bin - Container header signature
+	SGK_cert.bin - SGK key certificate (If included)
+	SGK_sign.bin - SGK key signature (If included)
+	SRKHash.bin  - SRK hash fuses
+	SRKTable.bin - SRK table
+
+4 - Example:
+
+Usage example based in 2nd container of a L4.19.35_1.1.0 i.MX8QM image:
+
+	$ python3 parse_sig_blk.py flash.bin 0x400
+	$ tree
+	  └── output
+	      ├── IMG_sign.bin
+	      ├── SGK_cert.bin
+	      ├── SGK_sign.bin
+	      ├── SRKHash.bin
+	      └── SRKTable.bin
+
+5 - Contents:
+
+parse_sig_blk.py - Program to parse signature block in the boot image
+common.py        - Definitions and common functions
+README           - This file
+
+6 - Release Notes:
+
+CST 3.3.0 - Initial version

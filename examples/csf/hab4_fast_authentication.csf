@@ -1,0 +1,20 @@
+[Header]
+  Version = 4.1
+  Hash Algorithm = sha256
+  Engine = ANY
+  Engine Configuration = 0
+  Certificate Format = X509
+  Signature Format = CMS
+
+[Install SRK]
+  File = "../crts/TBL_1_sha256_tbl.bin"
+  Source index = 0
+
+[Install NOCAK]
+  File = "../crts/SRK1_sha256_2048_65537_v3_usr_crt.pem"
+
+[Authenticate CSF]
+
+[Authenticate Data]
+  Verification index = 0
+  Blocks = 0x877fb000 0x000 0x48000 "signed-uboot.bin"

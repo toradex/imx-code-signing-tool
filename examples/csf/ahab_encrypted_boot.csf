@@ -1,0 +1,28 @@
+[Header]
+  Target = AHAB
+  Version = 1.0
+
+[Install SRK]
+  # Output of srktool
+  File = "../crts/srk_table.bin"
+  # Public key certificate in PEM or DER format
+  Source = "../crts/srk1_crt.pem"
+  # Index of SRK in SRK table
+  Source index = 0
+  # Origin of SRK table
+  Source set = OEM
+  # Revoked SRKs
+  Revocations = 0x0
+
+[Authenticate Data]
+  # Output of mkimage
+  File = "flash.bin
+  # Offsets = Container header Signature block (printed out by mkimage)
+  Offsets	= 0x400	       0x490
+
+[Install Secret Key]
+  Key = "data_encryption.key"
+  Key Length = 128
+  Key Identifier = 0x4a534d21
+  # Image index 0 not encrypted
+  Image Indexes = 0xFFFFFFFE

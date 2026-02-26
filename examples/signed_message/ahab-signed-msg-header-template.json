@@ -1,0 +1,16 @@
+{
+  "container": {
+    "header": {
+      "version": "0x0",
+      "fuse version": "0x0",
+      "SW version": "0x04"
+    },
+    "message": {
+      "flags": "0",
+      "cert version": "0",
+      "permission": "0x010",
+      "monotonic counter": "0",
+      "UID": "0000000000000000"
+    }
+  }
+}

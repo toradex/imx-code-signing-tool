@@ -1,0 +1,30 @@
+[Header]
+  Version = 4.0
+  Security Configuration = Open
+  Hash Algorithm = sha256
+  Engine = DCP
+  Engine Configuration = 0
+  Certificate Format = X509
+  Signature Format = CMS
+
+[Install SRK]
+  File = "TBL_1_sha256_tbl.bin"
+  Source index = 0
+
+[Install CSFK]
+  File = "CSF1_1_pkcs1_pkcs1_sha256_1024_3_v3_usr_crt.bin"
+
+[Authenticate CSF]
+#whole line comment
+
+[Install Key]
+  Verification index = 0
+  Target index = 2
+  File = "IMG1_1_pkcs1_pkcs1_sha256_1024_3_v3_usr_crt.bin"
+
+[Authenticate Data]	# part line comment
+  Verification index = 2
+  Engine = DCP
+  Blocks = 0xf8009400 0x400 0x40 "MCUROM-OCRAM-ENG_img.bin", \
+           0xf8009440 0x440 0x40 "MCUROM-OCRAM-ENG_img.bin", \
+           0xf800a000 0x1000 0x8000 "MCUROM-OCRAM-ENG_img.bin"

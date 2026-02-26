@@ -1,0 +1,23 @@
+[Header]
+  Target = AHAB
+  Version = 2.0 # hybrid container
+
+[Install SRK]
+  # Output of srktool (SRK table array)
+  File = "../crts/srk_tables.bin"
+  # Public key certificate in PEM or DER format
+  Source = "../crts/srk1_crt.pem"
+  # Index of SRK in SRK table
+  Source index = 0
+  # Origin of SRK table
+  Source set = OEM
+  # Revoked SRKs
+  Revocations = 0x0
+  # Enable Hash and Copy + Usage of external accelerator
+  Fast Boot = 0x2
+
+[Authenticate Data]
+  # Output of mkimage
+  File = "flash.bin"
+  # Offsets = Container header Signature block (printed out by mkimage)
+  Offsets =   0x8000           0x8290

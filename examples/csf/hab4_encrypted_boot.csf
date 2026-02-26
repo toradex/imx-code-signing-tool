@@ -1,0 +1,38 @@
+[Header]
+  Version = 4.1
+  Hash Algorithm = SHA256
+  Engine Configuration = 0
+  Certificate Format = X509
+  Signature Format = CMS
+  Engine = CAAM
+  Engine Configuration = 0
+
+[Install SRK]
+  File = "../crts/SRK_1_2_3_4_table.bin"
+  Source index = 0
+
+[Install CSFK]
+  File = "../crts/CSF1_1_sha256_4096_65537_v3_usr_crt.der"
+
+[Authenticate CSF]
+
+[Install Key]
+  Verification index = 0
+  Target index = 2
+  File = "../crts/IMG1_1_sha256_4096_65537_v3_usr_crt.der"
+
+[Authenticate data]
+  Verification index = 2
+  Blocks = 0x27800400 0x400 800 "u-boot-mx6q-arm2_padded.bin"
+
+[Install Secret Key]
+  Verification index = 0
+  Target index = 0
+  Key = "dek.bin"
+  Key Length = 128
+  Blob address = 0x27831000
+
+[Decrypt Data]
+  Verification index = 0
+  Mac Bytes = 16
+  Blocks = 0x27800720 0x720 0x2E8E0 "u-boot-mx6q-arm2_padded.bin"

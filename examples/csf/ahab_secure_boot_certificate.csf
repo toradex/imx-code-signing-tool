@@ -1,0 +1,26 @@
+[Header]
+  Target = AHAB
+  Version = 1.0
+
+[Install SRK]
+  # Output of srktool
+  File = ".../crts/srk_table.bin"
+  # Public key certificate in PEM or DER format
+  Source = ".../crts/srk3_crt.pem"
+  # Index of SRK in SRK table
+  Source index = 2
+  # Origin of SRK table
+  Source set = OEM
+  # Revoked SRKs
+  Revocations = 0x1
+
+[Install Certificate]
+  # Public key certificate in PEM or DER format
+  File = "./crts/sgk3_crt.pem"
+  Permissions = 0x1
+
+[Authenticate Data]
+  # Output of mkimage
+  File = "flash.bin"
+  # Offsets = Container header Signature block (printed out by mkimage)
+  Offsets	= 0x400	       0x710

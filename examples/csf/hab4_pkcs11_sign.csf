@@ -1,0 +1,29 @@
+[Header]
+  Version = 4.3
+  Hash Algorithm = sha256
+  Engine = CAAM
+  Engine Configuration = 0
+  Certificate Format = X509
+  Signature Format = CMS
+
+[Install SRK]
+  File = "SRK_1_2_3_4_table.bin"
+  Source index = 0
+
+[Install CSFK]
+  File = "pkcs11:token=CST-HSM-DEMO;object=CSF1_1_sha256_2048_65537_v3_usr;type=cert;pin-value=${USR_PIN}"
+
+[Authenticate CSF]
+
+[Unlock]
+    Engine = CAAM
+    Features = MID
+
+[Install Key]
+  Verification index = 0
+  Target index = 2
+  File = "pkcs11:token=CST-HSM-DEMO;object=IMG1_1_sha256_2048_65537_v3_usr;type=cert;pin-value=${USR_PIN}"
+
+[Authenticate Data]
+  Verification index = 2
+  Blocks = 0x7e0fc0 0x1a000 0x2a600 "flash.bin"
