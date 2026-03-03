@@ -1,0 +1,11 @@
+# the docs folder contains NXP-copyrighted material
+docs/
+
+# no need to include licenses for dependencies not present in the repo
+licenses/
+
+# no need to include pre-built binaries
+linux32/
+linux64/
+mingw32/
+mingw64/
